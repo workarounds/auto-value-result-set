@@ -253,7 +253,7 @@ public class AutoValueResultSetExtensionTest {
                 + "import java.lang.Short;\n"
                 + "import java.lang.String;\n"
                 + "import java.sql.SQLException;\n"
-                + "final class AutoValue_Test extends $AutoValue_Test throws SQLException {\n"
+                + "final class AutoValue_Test extends $AutoValue_Test thrown{\n"
                 + "  AutoValue_Test(String a, int b, Integer c, long d, Long e, short f, Short g, double h, Double i, float j, Float k, boolean l, Boolean m, byte[] n) {\n"
                 + "    super(a, b, c, d, e, f, g, h, i, j, k, l, m, n);\n"
                 + "  }\n"
@@ -335,12 +335,11 @@ public class AutoValueResultSetExtensionTest {
                 + "package test;\n"
                 + "import java.sql.ResultSet;\n"
                 + "import java.lang.String;\n"
-                + "import java.sql.SQLException;\n"
                 + "final class AutoValue_Test extends $AutoValue_Test {\n"
                 + "  AutoValue_Test(Foo foo, String bar, String columnName) {\n"
                 + "    super(foo, bar, columnName);\n"
                 + "  }\n"
-                + "  static AutoValue_Test createFromResultSet(ResultSet resultSet) throws SQLException {\n"
+                + "  static AutoValue_Test createFromResultSet(ResultSet resultSet) {\n"
                 + "    FooAdapter fooAdapter = new FooAdapter();\n"
                 + "    StringAdapter stringAdapter = new StringAdapter();\n"
                 + "    Foo foo = fooAdapter.fromResultSet(resultSet, \"foo\");\n"
@@ -358,6 +357,7 @@ public class AutoValueResultSetExtensionTest {
                 .generatesSources(expected);
     }
 
+    // TODO: 08/08/16 change the tests to add exception signatures
     @Test
     public void rxjava() {
         JavaFileObject source = JavaFileObjects.forSourceString("test.Test", ""

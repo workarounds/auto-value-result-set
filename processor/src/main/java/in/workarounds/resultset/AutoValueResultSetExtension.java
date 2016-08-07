@@ -36,6 +36,7 @@ import static javax.lang.model.element.Modifier.STATIC;
 public class AutoValueResultSetExtension extends AutoValueExtension {
 
     private static final ClassName SQL_EXCEPTION = ClassName.get("java.sql", "SQLException");
+    private static final ClassName RX_EXCEPTIONS = ClassName.get("rx.exceptions", "Exceptions");
     private static final ClassName RESULT_SET = ClassName.get("java.sql", "ResultSet");
     private static final ClassName FUNC1 = ClassName.get("rx.functions", "Func1");
 
@@ -142,7 +143,12 @@ public class AutoValueResultSetExtension extends AutoValueExtension {
                         .addModifiers(PUBLIC)
                         .addParameter(RESULT_SET, "rs")
                         .returns(getFinalClassClassName(context))
+                        .beginControlFlow("try")
                         .addStatement("return $L($N)", METHOD_NAME, "rs")
+                        .endControlFlow()
+                        .beginControlFlow("catch ($T e)", SQL_EXCEPTION)
+                        .addStatement("$T.propagate(e)", RX_EXCEPTIONS)
+                        .endControlFlow()
                         .build();
         TypeSpec func1 =
                 TypeSpec.anonymousClassBuilder("")
