@@ -147,7 +147,7 @@ public class AutoValueResultSetExtension extends AutoValueExtension {
                         .addStatement("return $L($N)", METHOD_NAME, "rs")
                         .endControlFlow()
                         .beginControlFlow("catch ($T e)", SQL_EXCEPTION)
-                        .addStatement("$T.propagate(e)", RX_EXCEPTIONS)
+                        .addStatement("throw $T.propagate(e)", RX_EXCEPTIONS)
                         .endControlFlow()
                         .build();
         TypeSpec func1 =
