@@ -43,7 +43,8 @@ The following types are supported by default:
  * `boolean`/`Boolean`
  * `byte` / `Byte`
  * `java.sql.Date`
- * 
+ * `java.sql.Time`
+ * `java.sql.Timestamp`
 
 For other types, you need to use the `@ColumnAdapter` annotation and specify a factory
 class that implements the `ColumnTypeAdapter` interface.
@@ -58,8 +59,8 @@ When you need to map multiple columns to one custom type you can simply ignore t
   abstract String name();
   @ColumnAdapter(AvatarAdapter.class) Avatar avatar();
 
-  public static User createFromCursor(Cursor cursor) {
-    return AutoValue_User.createFromCursor(cursor);
+  public static User createFromResultSet(ResultSet resultSet) throws SQLException {
+    return AutoValue_User.createFromResultSet(resultSet);
   }
 }
 ```
@@ -68,15 +69,10 @@ When you need to map multiple columns to one custom type you can simply ignore t
 
 ```java
 public class AvatarAdapter implements ColumnTypeAdapter<Avatar> {
-  public Avatar fromCursor(Cursor cursor, String columnName) {
-    String smallImageUrl = cursor.getString(cursor.getColumnIndex("small_image_url");
-    String largeImageUrl = cursor.getString(cursor.getColumnIndex("large_image_url");
+  public Avatar fromResultSet(ResultSet resultSet, String columnName) throws SQLException {
+    String smallImageUrl = resultSet.getString(resultSet.findColumn("small_image_url");
+    String largeImageUrl = resultSet.getString(resultSet.findColumn("large_image_url");
     return new Avatar(smallImageUrl, largeImageUrl);
-  }
-  public void toContentValues(ContentValues values, String columnName, Avatar value) {
-    // leave this empty when you don't use a "toContentValues()" method
-    values.putString("small_image_url", value.smallImageUrl);
-    values.putString"large_image_url", value.largeImageUrl);
   }
 }
 ```
@@ -100,9 +96,9 @@ public class Avatar {
 Add a Gradle dependency:
 
 ```groovy
-apt 'com.gabrielittner.auto.value:auto-value-cursor:1.0.0-rc1'
+apt 'in.workarounds.auto-value-result-set:processor:0.0.7'
 // if you need the @ColumnName or @ColumnAdapter annotations also include this:
-compile 'com.gabrielittner.auto.value:auto-value-cursor-annotations:1.0.0-rc1'
+compile 'in.workarounds.auto-value-result-set:annotations:0.0.7'
 ```
 (Using the [android-apt][apt] plugin)
 
@@ -110,25 +106,23 @@ compile 'com.gabrielittner.auto.value:auto-value-cursor-annotations:1.0.0-rc1'
 or Maven:
 ```xml
 <dependency>
-  <groupId>com.gabrielittner.auto.value</groupId>
-  <artifactId>auto-value-cursor</artifactId>
-  <version>1.0.0-rc1</version>
+  <groupId>in.workarounds.auto-value-result-set</groupId>
+  <artifactId>processor</artifactId>
+  <version>0.0.7</version>
   <scope>provided</scope>
 </dependency>
 <!-- if you need the @ColumnName or @ColumnAdapter annotations also include this: -->
 <dependency>
-  <groupId>com.gabrielittner.auto.value</groupId>
-  <artifactId>auto-value-cursor-annotations</artifactId>
+  <groupId>in.workarounds.auto-value-result-set</groupId>
+  <artifactId>annotations</artifactId>
   <version>1.0.0-rc1</version>
-  <scope>compile</scope>
+  <scope>0.0.7</scope>
 </dependency>
 ```
 
-Snapshots of the development version are available in [Sonatype's `snapshots` repository][snap].
-
 ## License
 
-This project is heavily based on [Ryan Harter][ryan]'s [auto-value-gson][auto-gson]
+This project is heavily based on [Gabriel Ittner][gabrielittner]'s [auto-value-cursor][auto-cursor]
 
 ```
 Copyright 2015 Ryan Harter.
@@ -150,8 +144,7 @@ limitations under the License.
 
 
  [auto]: https://github.com/google/auto
- [snap]: https://oss.sonatype.org/content/repositories/snapshots/
  [apt]: https://bitbucket.org/hvisser/android-apt
- [ryan]: https://github.com/rharter/
- [auto-gson]: https://github.com/rharter/auto-value-gson
+ [gabrielittner]: https://github.com/gabrielittner
+ [auto-cursor]: https://github.com/gabrielittner/auto-value-cursor
 
