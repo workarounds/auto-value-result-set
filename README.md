@@ -1,14 +1,14 @@
-# AutoValue: Cursor Extension
+# AutoValue: ResultSet Extension
 
-An extension for Google's [AutoValue][auto] that generates a `createFromCursor(Cursor c)` method for AutoValue annotated objects.
+An extension for Google's [AutoValue][auto] that generates a `createFromResultSet(ResultSet rs)` method for AutoValue annotated objects.
 
 
 ## Usage
 
-Include auto-value-cursor in your project and add a static factory method to your auto-value object.
+Include auto-value-result-set in your project and add a static factory method to your auto-value object.
 
 ```java
-import com.gabrielittner.auto.value.cursor.ColumnName;
+import in.workarounds.ColumnName;
 
 @AutoValue public abstract class User {
   abstract String id();

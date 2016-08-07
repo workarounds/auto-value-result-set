@@ -1,7 +1,7 @@
-package in.workarounds;
+package in.workarounds.avrs;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
+import in.workaounds.avrs.ColumnAdapter;
+import in.workaounds.avrs.ColumnName;
 import com.gabrielittner.auto.value.util.Property;
 import com.google.auto.value.extension.AutoValueExtension;
 import com.google.common.collect.ImmutableList;

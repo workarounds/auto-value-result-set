@@ -1,6 +1,6 @@
-package in.workarounds.resultset;
+package in.workarounds.avrs.resultset;
 
-import in.workarounds.ColumnProperty;
+import in.workarounds.avrs.ColumnProperty;
 import com.gabrielittner.auto.value.util.ElementUtil;
 import com.gabrielittner.auto.value.util.Property;
 import com.google.auto.service.AutoService;
