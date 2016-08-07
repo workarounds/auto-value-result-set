@@ -50,6 +50,7 @@ public final class ColumnProperty extends Property {
                     TypeName.BYTE.box(),
                     SQL_DATE,
                     SQL_TIME,
+                    SQL_TIMESTAMP,
                     INPUT_STREAM);
 
     private final String columnName;

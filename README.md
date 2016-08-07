@@ -8,7 +8,7 @@ An extension for Google's [AutoValue][auto] that generates a `createFromResultSe
 Include auto-value-result-set in your project and add a static factory method to your auto-value object.
 
 ```java
-import in.workarounds.ColumnName;
+import in.workarounds.avrs.ColumnName;
 
 @AutoValue public abstract class User {
   abstract String id();
@@ -16,24 +16,20 @@ import in.workarounds.ColumnName;
   // use the annotation if column name and field name aren't the same
   @ColumnName("email_address") abstract String email();
 
-  public static User create(Cursor cursor) {
-    return AutoValue_User.createFromCursor(cursor);
+  public static User create(ResultSet resultSet) {
+    return AutoValue_User.createFromResultSet(resultSet);
   }
 
-  // Optional: if your project includes RxJava the extension will generate a Func1<Cursor, User>
-  public static Func1<Cursor, User> mapper() {
+  // Optional: if your project includes RxJava the extension will generate a Func1<ResultSet, User>
+  public static Func1<ResultSet, User> mapper() {
     return AutoValue_User.MAPPER;
   }
-
-  // Optional: When you include an abstract method that returns ContentValues and doesn't have
-  // any parameters the extension will implement it for you
-  abstract ContentValues toContentValues();
 }
 ```
 
 **Important:** The extension will only be applied when there is
-- a static method that returns your value type (`User` in the example) and takes a `Cursor` as parameter
-- and/or a static method that returns a `Func1<Cursor, YourValueType>` and has no parameters
+- a static method that returns your value type (`User` in the example) and takes a `ResultSet` as parameter
+- and/or a static method that returns a `Func1<ResultSet, YourValueType>` and has no parameters
 
 The following types are supported by default:
 
@@ -45,6 +41,9 @@ The following types are supported by default:
  * `short`/`Short`
  * `String`
  * `boolean`/`Boolean`
+ * `byte` / `Byte`
+ * `java.sql.Date`
+ * 
 
 For other types, you need to use the `@ColumnAdapter` annotation and specify a factory
 class that implements the `ColumnTypeAdapter` interface.
