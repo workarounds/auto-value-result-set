@@ -1,6 +1,6 @@
-package com.gabrielittner.auto.value.cursor;
+package in.workarounds.resultset;
 
-import com.gabrielittner.auto.value.ColumnProperty;
+import in.workarounds.ColumnProperty;
 import com.gabrielittner.auto.value.util.ElementUtil;
 import com.gabrielittner.auto.value.util.Property;
 import com.google.auto.service.AutoService;
@@ -33,7 +33,7 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
 @AutoService(AutoValueExtension.class)
-public class AutoValueCursorExtension extends AutoValueExtension {
+public class AutoValueResultSetExtension extends AutoValueExtension {
 
     private static final ClassName RESULT_SET = ClassName.get("java.sql", "ResultSet");
     private static final ClassName FUNC1 = ClassName.get("rx.functions", "Func1");
@@ -119,7 +119,7 @@ public class AutoValueCursorExtension extends AutoValueExtension {
         String columnIndexVar = property.humanName() + "ColumnIndex";
         CodeBlock getValue =
                 CodeBlock.builder()
-                        .add("cursor.isNull($L) ? null : ", columnIndexVar)
+                        .add("resultSet.isNull($L) ? null : ", columnIndexVar)
                         .add(property.resultSetMethod(), columnIndexVar)
                         .build();
         return CodeBlock.builder()

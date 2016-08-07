@@ -1,10 +1,11 @@
-package com.gabrielittner.auto.value;
+package in.workarounds;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.gabrielittner.auto.value.util.Property;
 import com.google.auto.value.extension.AutoValueExtension;
 import com.google.common.collect.ImmutableList;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +16,10 @@ import javax.lang.model.type.TypeMirror;
 import static com.gabrielittner.auto.value.util.ElementUtil.getAnnotationValue;
 
 public final class ColumnProperty extends Property {
+    public static final ClassName SQL_DATE = ClassName.bestGuess("java.sql.Date");
+    public static final ClassName SQL_TIME = ClassName.bestGuess("java.sql.Time");
+    public static final ClassName SQL_TIMESTAMP = ClassName.bestGuess("java.sql.Timestamp");
+    public static final ClassName INPUT_STREAM = ClassName.bestGuess("java.io.InputStream");
 
     public static ImmutableList<ColumnProperty> from(AutoValueExtension.Context context) {
         ImmutableList.Builder<ColumnProperty> values = ImmutableList.builder();
@@ -40,7 +45,12 @@ public final class ColumnProperty extends Property {
                     TypeName.SHORT,
                     TypeName.SHORT.box(),
                     TypeName.BOOLEAN,
-                    TypeName.BOOLEAN.box());
+                    TypeName.BOOLEAN.box(),
+                    TypeName.BYTE,
+                    TypeName.BYTE.box(),
+                    SQL_DATE,
+                    SQL_TIME,
+                    INPUT_STREAM);
 
     private final String columnName;
     private final boolean supportedType;
@@ -69,7 +79,7 @@ public final class ColumnProperty extends Property {
         }
         TypeName type = type();
         if (type.equals(TypeName.get(byte[].class)) || type.equals(TypeName.get(Byte[].class))) {
-            return "resultSet.getBlob($L)";
+            return "resultSet.getBytes($L)";
         }
         if (type.equals(TypeName.DOUBLE) || type.equals(TypeName.DOUBLE.box())) {
             return "resultSet.getDouble($L)";
@@ -90,7 +100,22 @@ public final class ColumnProperty extends Property {
             return "resultSet.getString($L)";
         }
         if (type.equals(TypeName.BOOLEAN) || type.equals(TypeName.BOOLEAN.box())) {
-            return "resultSet.getInt($L) == 1";
+            return "resultSet.getBoolean($L)";
+        }
+        if (type.equals(TypeName.BYTE) || type.equals(TypeName.BYTE.box())) {
+            return "resultSet.getByte($L)";
+        }
+        if (type.equals(SQL_DATE)) {
+            return "resultSet.getDate($L)";
+        }
+        if (type.equals(SQL_TIME)) {
+            return "resultSet.getTime($L)";
+        }
+        if (type.equals(SQL_TIMESTAMP)) {
+            return "resultSet.getTimestamp($L)";
+        }
+        if (type.equals(INPUT_STREAM)) {
+            return "resultSet.getAsciiStream($L)";
         }
         throw new AssertionError(
                 String.format("supportedType is true but type %s isn't handled", type));
