@@ -6,7 +6,7 @@ sourceCompatibility = rootProject.ext.javaVersion
 targetCompatibility = rootProject.ext.javaVersion
 
 dependencies {
-    compile project(':auto-value-cursor-annotations')
+    compile project(':auto-value-result-set-annotations')
     compile deps.javapoet
     compile deps.auto_value
     compile deps.auto_common
