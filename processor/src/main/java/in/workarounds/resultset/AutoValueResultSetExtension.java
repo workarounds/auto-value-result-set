@@ -35,6 +35,7 @@ import static javax.lang.model.element.Modifier.STATIC;
 @AutoService(AutoValueExtension.class)
 public class AutoValueResultSetExtension extends AutoValueExtension {
 
+    private static final ClassName SQL_EXCEPTION = ClassName.get("java.sql", "SQLException");
     private static final ClassName RESULT_SET = ClassName.get("java.sql", "ResultSet");
     private static final ClassName FUNC1 = ClassName.get("rx.functions", "Func1");
 
@@ -70,6 +71,7 @@ public class AutoValueResultSetExtension extends AutoValueExtension {
                 MethodSpec.methodBuilder(METHOD_NAME)
                         .addModifiers(STATIC)
                         .returns(getFinalClassClassName(context))
+                        .addException(SQL_EXCEPTION)
                         .addParameter(RESULT_SET, "resultSet");
 
         ImmutableMap<Property, FieldSpec> columnAdapters = getColumnAdapters(properties);
