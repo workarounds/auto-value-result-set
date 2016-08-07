@@ -35,17 +35,17 @@ import static javax.lang.model.element.Modifier.STATIC;
 @AutoService(AutoValueExtension.class)
 public class AutoValueCursorExtension extends AutoValueExtension {
 
-    private static final ClassName CURSOR = ClassName.get("android.database", "Cursor");
+    private static final ClassName RESULT_SET = ClassName.get("java.sql", "ResultSet");
     private static final ClassName FUNC1 = ClassName.get("rx.functions", "Func1");
 
-    private static final String METHOD_NAME = "createFromCursor";
+    private static final String METHOD_NAME = "createFromResultSet";
     private static final String FUNC1_FIELD_NAME = "MAPPER";
     private static final String FUNC1_METHOD_NAME = "call";
 
     @Override
     public boolean applicable(Context context) {
         TypeElement valueClass = context.autoValueClass();
-        return getMatchingStaticMethod(valueClass, ClassName.get(valueClass), CURSOR).isPresent()
+        return getMatchingStaticMethod(valueClass, ClassName.get(valueClass), RESULT_SET).isPresent()
                 || getMatchingStaticMethod(valueClass, getFunc1TypeName(context)).isPresent();
     }
 
@@ -70,7 +70,7 @@ public class AutoValueCursorExtension extends AutoValueExtension {
                 MethodSpec.methodBuilder(METHOD_NAME)
                         .addModifiers(STATIC)
                         .returns(getFinalClassClassName(context))
-                        .addParameter(CURSOR, "cursor");
+                        .addParameter(RESULT_SET, "resultSet");
 
         ImmutableMap<Property, FieldSpec> columnAdapters = getColumnAdapters(properties);
         addColumnAdaptersToMethod(readMethod, properties, columnAdapters);
@@ -82,7 +82,7 @@ public class AutoValueCursorExtension extends AutoValueExtension {
 
             if (property.columnAdapter() != null) {
                 readMethod.addStatement(
-                        "$T $N = $N.fromCursor(cursor, $S)",
+                        "$T $N = $N.fromResultSet(resultSet, $S)",
                         property.type(),
                         property.humanName(),
                         columnAdapters.get(property),
@@ -95,11 +95,11 @@ public class AutoValueCursorExtension extends AutoValueExtension {
                 }
             } else if (property.nullable()) {
                 readMethod.addCode(
-                        "$T $N = null; // can't be read from cursor\n",
+                        "$T $N = null; // can't be read from resultSet\n",
                         property.type(),
                         property.humanName());
             } else {
-                error(context, property, "Property has type that can't be read from Cursor.");
+                error(context, property, "Property has type that can't be read from ResultSet.");
             }
         }
         return readMethod
@@ -109,7 +109,7 @@ public class AutoValueCursorExtension extends AutoValueExtension {
     }
 
     private CodeBlock readProperty(ColumnProperty property) {
-        CodeBlock getValue = CodeBlock.of(property.cursorMethod(), getColumnIndex(property));
+        CodeBlock getValue = CodeBlock.of(property.resultSetMethod(), getColumnIndex(property));
         return CodeBlock.builder()
                 .addStatement("$T $N = $L", property.type(), property.humanName(), getValue)
                 .build();
@@ -120,7 +120,7 @@ public class AutoValueCursorExtension extends AutoValueExtension {
         CodeBlock getValue =
                 CodeBlock.builder()
                         .add("cursor.isNull($L) ? null : ", columnIndexVar)
-                        .add(property.cursorMethod(), columnIndexVar)
+                        .add(property.resultSetMethod(), columnIndexVar)
                         .build();
         return CodeBlock.builder()
                 .addStatement("int $L = $L", columnIndexVar, getColumnIndex(property))
@@ -129,7 +129,7 @@ public class AutoValueCursorExtension extends AutoValueExtension {
     }
 
     private CodeBlock getColumnIndex(ColumnProperty property) {
-        return CodeBlock.of("cursor.getColumnIndexOrThrow($S)", property.columnName());
+        return CodeBlock.of("resultSet.findColumn($S)", property.columnName());
     }
 
     private FieldSpec createMapper(Context context) {
@@ -138,9 +138,9 @@ public class AutoValueCursorExtension extends AutoValueExtension {
                 MethodSpec.methodBuilder(FUNC1_METHOD_NAME)
                         .addAnnotation(Override.class)
                         .addModifiers(PUBLIC)
-                        .addParameter(CURSOR, "c")
+                        .addParameter(RESULT_SET, "rs")
                         .returns(getFinalClassClassName(context))
-                        .addStatement("return $L($N)", METHOD_NAME, "c")
+                        .addStatement("return $L($N)", METHOD_NAME, "rs")
                         .build();
         TypeSpec func1 =
                 TypeSpec.anonymousClassBuilder("")
@@ -153,7 +153,7 @@ public class AutoValueCursorExtension extends AutoValueExtension {
     }
 
     private TypeName getFunc1TypeName(Context context) {
-        return ParameterizedTypeName.get(FUNC1, CURSOR, getAutoValueClassClassName(context));
+        return ParameterizedTypeName.get(FUNC1, RESULT_SET, getAutoValueClassClassName(context));
     }
 
     public static ImmutableMap<Property, FieldSpec> getColumnAdapters(

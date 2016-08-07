@@ -4,7 +4,7 @@ sourceCompatibility = rootProject.ext.javaVersion
 targetCompatibility = rootProject.ext.javaVersion
 
 dependencies {
-    compileOnly deps.android
+    compileOnly deps.mysqlconnector
 }
 
 apply from: rootProject.file('gradle/mvn-push.gradle')

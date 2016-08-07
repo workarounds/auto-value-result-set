@@ -63,34 +63,34 @@ public final class ColumnProperty extends Property {
         return (TypeMirror) getAnnotationValue(element(), ColumnAdapter.class, "value");
     }
 
-    public String cursorMethod() {
+    public String resultSetMethod() {
         if (!supportedType) {
             return null;
         }
         TypeName type = type();
         if (type.equals(TypeName.get(byte[].class)) || type.equals(TypeName.get(Byte[].class))) {
-            return "cursor.getBlob($L)";
+            return "resultSet.getBlob($L)";
         }
         if (type.equals(TypeName.DOUBLE) || type.equals(TypeName.DOUBLE.box())) {
-            return "cursor.getDouble($L)";
+            return "resultSet.getDouble($L)";
         }
         if (type.equals(TypeName.FLOAT) || type.equals(TypeName.FLOAT.box())) {
-            return "cursor.getFloat($L)";
+            return "resultSet.getFloat($L)";
         }
         if (type.equals(TypeName.INT) || type.equals(TypeName.INT.box())) {
-            return "cursor.getInt($L)";
+            return "resultSet.getInt($L)";
         }
         if (type.equals(TypeName.LONG) || type.equals(TypeName.LONG.box())) {
-            return "cursor.getLong($L)";
+            return "resultSet.getLong($L)";
         }
         if (type.equals(TypeName.SHORT) || type.equals(TypeName.SHORT.box())) {
-            return "cursor.getShort($L)";
+            return "resultSet.getShort($L)";
         }
         if (type.equals(TypeName.get(String.class))) {
-            return "cursor.getString($L)";
+            return "resultSet.getString($L)";
         }
         if (type.equals(TypeName.BOOLEAN) || type.equals(TypeName.BOOLEAN.box())) {
-            return "cursor.getInt($L) == 1";
+            return "resultSet.getInt($L) == 1";
         }
         throw new AssertionError(
                 String.format("supportedType is true but type %s isn't handled", type));
