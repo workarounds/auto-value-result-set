@@ -1,0 +1,53 @@
+import org.gradle.internal.jvm.Jvm
+
+apply plugin: 'java'
+
+sourceCompatibility = rootProject.ext.javaVersion
+targetCompatibility = rootProject.ext.javaVersion
+
+dependencies {
+    compile project(':annotations')
+    compile deps.javapoet
+    compile deps.auto_value
+    compile deps.auto_common
+    compile deps.auto_ext_util
+
+    compileOnly deps.auto_service
+
+    testCompile deps.junit
+    testCompile deps.truth
+    testCompile deps.compile_testing
+    testCompile files(Jvm.current().getToolsJar())
+    testCompile deps.jsr305
+}
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'auto-value-result-set-processor'
+    orgName = 'workarounds'
+
+    publishedGroupId = 'in.workarounds.auto-value-result-set'
+    libraryName = 'Bundler'
+    artifact = 'processor'
+
+    libraryDescription = 'Processor for auto-value-result-set library'
+
+    siteUrl = 'https://github.com/workarounds/auto-value-result-set'
+    gitUrl = 'https://github.com/workarounds/auto-value-result-set.git'
+
+    libraryVersion = rootProject.ext.libraryVersion
+
+    developerId = 'workarounds'
+    developerName = 'Workarounds'
+    developerEmail = 'contact@workarounds.in'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+
+if (project.rootProject.file('local.properties').exists()) {
+    apply from: rootProject.file('gradle/install-v1.gradle')
+    apply from: rootProject.file('gradle/bintray-java-v1.gradle')
+}

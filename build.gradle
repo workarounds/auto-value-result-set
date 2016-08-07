@@ -4,9 +4,20 @@ allprojects {
     }
 }
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.3.1'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
+    }
+}
+
 
 ext {
     javaVersion = JavaVersion.VERSION_1_7
+    libraryVersion = '0.0.1'
 }
 
 ext.deps = [
