@@ -17,7 +17,7 @@ buildscript {
 
 ext {
     javaVersion = JavaVersion.VERSION_1_7
-    libraryVersion = '0.0.1'
+    libraryVersion = '0.0.2'
 }
 
 ext.deps = [
