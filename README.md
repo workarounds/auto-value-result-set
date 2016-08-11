@@ -125,6 +125,7 @@ or Maven:
 This project is heavily based on [Gabriel Ittner][gabrielittner]'s [auto-value-cursor][auto-cursor]
 
 ```
+Copyright 2016 Workarounds
 Copyright 2015 Ryan Harter.
 Copyright 2015 Gabriel Ittner.
 
